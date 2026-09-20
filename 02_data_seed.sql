@@ -1,125 +1,174 @@
--- ====================================================================
--- Project: Source-to-Pay (S2P) Analytics Pipeline
--- Domain: Indian FMCG / Sports Nutrition Manufacturing
--- Description: Clean transactional seed data for schema validation & Power BI
--- ====================================================================
+-- ============================================================================
+-- SOURCE-TO-PAY (S2P) PIPELINE: DATA SEED SCRIPT (150 Lifecycle Records)
+-- ============================================================================
 
--- 1. Wipe existing records cleanly in foreign key dependency order
-DELETE FROM invoices;
-DELETE FROM goods_receipts;
-DELETE FROM purchase_orders;
-DELETE FROM suppliers;
+-- 1. Vendors (10 Records)
+INSERT INTO vendors (vendor_id, vendor_name, category, payment_terms_days, country, risk_tier) VALUES
+('VND-001', 'Krona Industrial Packaging', 'Packaging', 30, 'DE', 'Low'),
+('VND-002', 'Bavaria Chemical Synthetics', 'Raw Materials', 45, 'DE', 'Medium'),
+('VND-003', 'Nordic Logistics Solutions', 'Logistics', 14, 'DK', 'Low'),
+('VND-004', 'Rhine Tech & IT Systems', 'IT Services', 30, 'DE', 'Low'),
+('VND-005', 'Hanseatic Facility Care', 'Facilities', 15, 'DE', 'High'),
+('VND-006', 'Apex Spices & Botanicals', 'Raw Materials', 60, 'IN', 'Medium'),
+('VND-007', 'Vistula Supply Chain Parts', 'Machinery', 30, 'PL', 'Low'),
+('VND-008', 'Iberia Glass & Container', 'Packaging', 45, 'ES', 'Medium'),
+('VND-009', 'Swiss Micro Automation', 'Engineering', 30, 'CH', 'Low'),
+('VND-010', 'Danube Cold Chain Transport', 'Logistics', 30, 'AT', 'High');
 
--- 2. Insert 10 Indian Nutrition & Packaging Suppliers
-INSERT INTO suppliers (vendor_id, vendor_name, category, payment_terms, country)
-SELECT 
-    'VEN-I' || LPAD(i::text, 3, '0'),
-    (ARRAY[
-        'MahaDairy Ingredients Pvt Ltd',
-        'Gujarat Agro & Whey Extracts',
-        'Baddi Pharma Packaging Solutions',
-        'South India Flavors & Aromas',
-        'Haryana Polymers & Containers',
-        'Baramati Agro Derivatives Ltd',
-        'Sylvan Nutrition Raw Mills',
-        'Deccan Stevia & Sweeteners',
-        'Surat Rigid Plastics & Caps',
-        'Uttarakhand Herbal Extracts'
-    ])[i],
-    (ARRAY[
-        'Dairy Raw Materials',
-        'Dairy Raw Materials',
-        'Primary Packaging',
-        'Flavors & Aromas',
-        'Secondary Packaging',
-        'Dairy Derivatives',
-        'Agri Raw Materials',
-        'Sweeteners',
-        'Packaging Caps',
-        'Herbal Extracts'
-    ])[i],
-    (ARRAY['Net 30', 'Net 45', 'Net 15', 'Net 30', 'Net 60', 'Net 30', 'Net 45', 'Net 15', 'Net 30', 'Net 60'])[i],
-    'IN'
-FROM generate_series(1, 10) AS i;
+-- 2. Purchase Orders (30 Records)
+INSERT INTO purchase_orders (po_id, vendor_id, department, buyer_id, order_date, po_status) VALUES
+('PO-2026-001', 'VND-001', 'Supply Chain', 'BUY-01', '2026-01-05', 'Closed'),
+('PO-2026-002', 'VND-002', 'Manufacturing', 'BUY-02', '2026-01-07', 'Closed'),
+('PO-2026-003', 'VND-003', 'Logistics', 'BUY-01', '2026-01-10', 'Closed'),
+('PO-2026-004', 'VND-004', 'IT & Digital', 'BUY-03', '2026-01-12', 'Closed'),
+('PO-2026-005', 'VND-005', 'Operations', 'BUY-02', '2026-01-15', 'Closed'),
+('PO-2026-006', 'VND-006', 'Procurement', 'BUY-01', '2026-01-18', 'Closed'),
+('PO-2026-007', 'VND-007', 'Engineering', 'BUY-03', '2026-01-20', 'Closed'),
+('PO-2026-008', 'VND-008', 'Packaging', 'BUY-02', '2026-01-25', 'Closed'),
+('PO-2026-009', 'VND-009', 'Engineering', 'BUY-03', '2026-01-28', 'Closed'),
+('PO-2026-010', 'VND-010', 'Logistics', 'BUY-01', '2026-02-01', 'Closed'),
+('PO-2026-011', 'VND-001', 'Supply Chain', 'BUY-01', '2026-02-03', 'Closed'),
+('PO-2026-012', 'VND-002', 'Manufacturing', 'BUY-02', '2026-02-05', 'Closed'),
+('PO-2026-013', 'VND-003', 'Logistics', 'BUY-01', '2026-02-08', 'Closed'),
+('PO-2026-014', 'VND-004', 'IT & Digital', 'BUY-03', '2026-02-10', 'Closed'),
+('PO-2026-015', 'VND-005', 'Operations', 'BUY-02', '2026-02-12', 'Closed'),
+('PO-2026-016', 'VND-006', 'Procurement', 'BUY-01', '2026-02-15', 'Closed'),
+('PO-2026-017', 'VND-007', 'Engineering', 'BUY-03', '2026-02-18', 'Closed'),
+('PO-2026-018', 'VND-008', 'Packaging', 'BUY-02', '2026-02-20', 'Closed'),
+('PO-2026-019', 'VND-009', 'Engineering', 'BUY-03', '2026-02-23', 'Invoiced'),
+('PO-2026-020', 'VND-010', 'Logistics', 'BUY-01', '2026-02-26', 'Invoiced'),
+('PO-2026-021', 'VND-001', 'Supply Chain', 'BUY-01', '2026-03-01', 'Invoiced'),
+('PO-2026-022', 'VND-002', 'Manufacturing', 'BUY-02', '2026-03-03', 'Invoiced'),
+('PO-2026-023', 'VND-003', 'Logistics', 'BUY-01', '2026-03-05', 'Invoiced'),
+('PO-2026-024', 'VND-004', 'IT & Digital', 'BUY-03', '2026-03-08', 'Invoiced'),
+('PO-2026-025', 'VND-005', 'Operations', 'BUY-02', '2026-03-10', 'Delivered'),
+('PO-2026-026', 'VND-006', 'Procurement', 'BUY-01', '2026-03-12', 'Delivered'),
+('PO-2026-027', 'VND-007', 'Engineering', 'BUY-03', '2026-03-14', 'Delivered'),
+('PO-2026-028', 'VND-008', 'Packaging', 'BUY-02', '2026-03-16', 'Approved'),
+('PO-2026-029', 'VND-009', 'Engineering', 'BUY-03', '2026-03-17', 'Approved'),
+('PO-2026-030', 'VND-010', 'Logistics', 'BUY-01', '2026-03-18', 'Approved');
 
--- 3. Insert 150 Purchase Orders for Whey Nutrition Ingredients & Materials
-INSERT INTO purchase_orders (po_id, vendor_id, po_date, promised_date, ordered_qty, unit_price, total_po_value)
-SELECT 
-    'PO-I' || LPAD(i::text, 4, '0'),
-    'VEN-I' || LPAD((1 + floor(random() * 10))::int::text, 3, '0'),
-    DATE '2026-01-01' + (i % 65) * INTERVAL '1 day',
-    DATE '2026-01-01' + ((i % 65) + 10) * INTERVAL '1 day',
-    qty,
-    price,
-    ROUND((qty * price)::numeric, 2)
-FROM (
-    SELECT 
-        i,
-        (100 + floor(random() * 900))::int AS qty,
-        ROUND((150 + (random() * 1850))::numeric, 2) AS price
-    FROM generate_series(1, 150) AS i
-) sub;
+-- 3. PO Line Items (30 Records)
+INSERT INTO po_line_items (po_line_id, po_id, item_description, quantity_ordered, unit_price_ordered) VALUES
+('POL-001', 'PO-2026-001', 'Corrugated Shipping Boxes 500x300', 1200.00, 1.85),
+('POL-002', 'PO-2026-002', 'Industrial Ethanol 99.5% Bulk', 4500.00, 3.20),
+('POL-003', 'PO-2026-003', 'Cross-Border Freight Pallet Transport', 40.00, 320.00),
+('POL-004', 'PO-2026-004', 'Enterprise Cloud License Seats', 60.00, 48.00),
+('POL-005', 'PO-2026-005', 'Cleanroom Sanitation Services Month 1', 1.00, 3400.00),
+('POL-006', 'PO-2026-006', 'Organic Black Pepper Extra Bold (KG)', 1500.00, 8.40),
+('POL-007', 'PO-2026-007', 'Conveyor Roller Bearing Units', 250.00, 24.50),
+('POL-008', 'PO-2026-008', 'Amber Glass Jars 250ml Fluted', 8000.00, 0.45),
+('POL-009', 'PO-2026-009', 'Programmable Logic Controller CPU', 8.00, 1850.00),
+('POL-010', 'PO-2026-010', 'Refrigerated Reeler Truck Transport', 12.00, 850.00),
+('POL-011', 'PO-2026-011', 'Recycled Kraft Outer Sleeves', 3500.00, 0.75),
+('POL-012', 'PO-2026-012', 'Food-Grade Citric Acid Monohydrate', 2000.00, 2.10),
+('POL-013', 'PO-2026-013', 'Warehouse Pallet Relocation Services', 25.00, 410.00),
+('POL-014', 'PO-2026-014', 'Database Tuning & Support Hours', 40.00, 125.00),
+('POL-015', 'PO-2026-015', 'HVAC System Preventive Maintenance', 1.00, 2800.00),
+('POL-016', 'PO-2026-016', 'Sri Lankan Cinnamon Quills C5', 800.00, 16.50),
+('POL-017', 'PO-2026-017', 'Hydraulic Valve Manifolds 3/8"', 45.00, 190.00),
+('POL-018', 'PO-2026-018', 'Tamper-Evident Aluminium Closures', 15000.00, 0.12),
+('POL-019', 'PO-2026-019', 'Optical Sensor Proximity Arrays', 35.00, 140.00),
+('POL-020', 'PO-2026-020', 'Dedicated Route Delivery Berlin-Munich', 8.00, 920.00),
+('POL-021', 'PO-2026-021', 'Heavy Duty Pallet Stretch Film (Rolls)', 400.00, 14.20),
+('POL-022', 'PO-2026-022', 'Ascorbic Acid USP Granular', 1000.00, 5.80),
+('POL-023', 'PO-2026-023', 'Container Drayage Hamburg to Hub', 15.00, 550.00),
+('POL-024', 'PO-2026-024', 'Cybersecurity Vulnerability Audit', 1.00, 6500.00),
+('POL-025', 'PO-2026-025', 'Industrial Waste Safe Disposal Run', 4.00, 850.00),
+('POL-026', 'PO-2026-026', 'Guatemala Cardamom Green Fancy', 500.00, 28.00),
+('POL-027', 'PO-2026-027', 'Rotary Actuator Pneumatic Cylinders', 20.00, 310.00),
+('POL-028', 'PO-2026-028', 'White Corrugated Carton Dividers', 5000.00, 0.38),
+('POL-029', 'PO-2026-029', 'Safety PLC Expansion I/O Modules', 10.00, 780.00),
+('POL-030', 'PO-2026-030', 'Express Courier Direct Line (Cases)', 50.00, 65.00);
 
--- 4. Insert Goods Receipts (Warehouse Intake with QC Scraps & Transit Variances)
-INSERT INTO goods_receipts (gr_id, po_id, delivery_date, received_qty, defect_qty, accepted_qty)
-SELECT 
-    'GR-I' || LPAD(ROW_NUMBER() OVER ()::text, 4, '0'),
-    sub.po_id,
-    sub.promised_date + (floor(random() * 7) - 2) * INTERVAL '1 day',
-    sub.r_qty,
-    sub.d_qty,
-    (sub.r_qty - sub.d_qty) AS accepted_qty
-FROM (
-    SELECT 
-        po_id,
-        promised_date,
-        CASE 
-            WHEN random() < 0.12 THEN ordered_qty - 40
-            ELSE ordered_qty 
-        END AS r_qty,
-        CASE 
-            WHEN random() < 0.10 THEN floor(random() * 15)::int
-            ELSE 0 
-        END AS d_qty
-    FROM purchase_orders
-    WHERE random() > 0.05
-) sub;
+-- 4. Goods Receipts (27 Records)
+INSERT INTO goods_receipts (gr_id, po_line_id, receipt_date, quantity_received, quality_status) VALUES
+('GR-2026-001', 'POL-001', '2026-01-10', 1200.00, 'Accepted'),
+('GR-2026-002', 'POL-002', '2026-01-15', 4500.00, 'Accepted'),
+('GR-2026-003', 'POL-003', '2026-01-12', 40.00, 'Accepted'),
+('GR-2026-004', 'POL-004', '2026-01-13', 60.00, 'Accepted'),
+('GR-2026-005', 'POL-005', '2026-01-16', 1.00, 'Accepted'),
+('GR-2026-006', 'POL-006', '2026-01-28', 1500.00, 'Accepted'),
+('GR-2026-007', 'POL-007', '2026-01-26', 250.00, 'Accepted'),
+('GR-2026-008', 'POL-008', '2026-02-02', 8000.00, 'Accepted'),
+('GR-2026-009', 'POL-009', '2026-02-04', 8.00, 'Accepted'),
+('GR-2026-010', 'POL-010', '2026-02-05', 12.00, 'Accepted'),
+('GR-2026-011', 'POL-011', '2026-02-09', 3500.00, 'Accepted'),
+('GR-2026-012', 'POL-012', '2026-02-12', 2000.00, 'Accepted'),
+('GR-2026-013', 'POL-013', '2026-02-11', 25.00, 'Accepted'),
+('GR-2026-014', 'POL-014', '2026-02-14', 40.00, 'Accepted'),
+('GR-2026-015', 'POL-015', '2026-02-18', 1.00, 'Accepted'),
+('GR-2026-016', 'POL-016', '2026-02-25', 800.00, 'Accepted'),
+('GR-2026-017', 'POL-017', '2026-02-24', 42.00, 'Partial'),
+('GR-2026-018', 'POL-018', '2026-02-28', 15000.00, 'Accepted'),
+('GR-2026-019', 'POL-019', '2026-03-02', 35.00, 'Accepted'),
+('GR-2026-020', 'POL-020', '2026-03-01', 8.00, 'Accepted'),
+('GR-2026-021', 'POL-021', '2026-03-07', 400.00, 'Accepted'),
+('GR-2026-022', 'POL-022', '2026-03-09', 950.00, 'Partial'),
+('GR-2026-023', 'POL-023', '2026-03-10', 15.00, 'Accepted'),
+('GR-2026-024', 'POL-024', '2026-03-12', 1.00, 'Accepted'),
+('GR-2026-025', 'POL-025', '2026-03-15', 4.00, 'Accepted'),
+('GR-2026-026', 'POL-026', '2026-03-18', 500.00, 'Accepted'),
+('GR-2026-027', 'POL-027', '2026-03-19', 20.00, 'Accepted');
 
--- 5. Insert Invoices (Simulating 3-Way Matching Variances & Status Constraints)
-INSERT INTO invoices (inv_id, po_id, inv_date, due_date, billed_qty, billed_unit_price, inv_amount, payment_status)
-SELECT 
-    'INV-I' || LPAD(ROW_NUMBER() OVER ()::text, 4, '0'),
-    sub.po_id,
-    sub.delivery_date + INTERVAL '2 days',
-    sub.delivery_date + INTERVAL '32 days',
-    sub.final_billed_qty,
-    sub.final_billed_price,
-    ROUND((sub.final_billed_qty * sub.final_billed_price)::numeric, 2),
-    sub.status
-FROM (
-    SELECT 
-        gr.po_id,
-        gr.delivery_date,
-        CASE 
-            WHEN random() < 0.12 THEN po.ordered_qty + 15
-            ELSE gr.received_qty
-        END AS final_billed_qty,
-        CASE 
-            WHEN random() < 0.09 THEN po.unit_price + 45.00
-            ELSE po.unit_price 
-        END AS final_billed_price,
-        CASE 
-            WHEN random() < 0.45 THEN 'Paid'
-            WHEN random() < 0.80 THEN 'Pending'
-            ELSE 'Blocked'
-        END AS status
-    FROM goods_receipts gr
-    JOIN purchase_orders po ON gr.po_id = po.po_id
-) sub;
+-- 5. Invoices (24 Records)
+INSERT INTO invoices (invoice_id, po_id, vendor_id, invoice_date, due_date, quantity_invoiced, unit_price_invoiced, invoice_amount, match_status) VALUES
+('INV-2026-001', 'PO-2026-001', 'VND-001', '2026-01-12', '2026-02-11', 1200.00, 1.85, 2220.00, '3-Way Matched'),
+('INV-2026-002', 'PO-2026-002', 'VND-002', '2026-01-18', '2026-03-04', 4500.00, 3.20, 14400.00, '3-Way Matched'),
+('INV-2026-003', 'PO-2026-003', 'VND-003', '2026-01-15', '2026-01-29', 40.00, 320.00, 12800.00, '3-Way Matched'),
+('INV-2026-004', 'PO-2026-004', 'VND-004', '2026-01-16', '2026-02-15', 60.00, 48.00, 2880.00, '3-Way Matched'),
+('INV-2026-005', 'PO-2026-005', 'VND-005', '2026-01-20', '2026-02-04', 1.00, 3400.00, 3400.00, '3-Way Matched'),
+('INV-2026-006', 'PO-2026-006', 'VND-006', '2026-01-30', '2026-03-31', 1500.00, 8.40, 12600.00, '3-Way Matched'),
+('INV-2026-007', 'PO-2026-007', 'VND-007', '2026-01-28', '2026-02-27', 250.00, 24.50, 6125.00, '3-Way Matched'),
+('INV-2026-008', 'PO-2026-008', 'VND-008', '2026-02-05', '2026-03-22', 8000.00, 0.45, 3600.00, '3-Way Matched'),
+('INV-2026-009', 'PO-2026-009', 'VND-009', '2026-02-06', '2026-03-08', 8.00, 1850.00, 14800.00, '3-Way Matched'),
+('INV-2026-010', 'PO-2026-010', 'VND-010', '2026-02-08', '2026-03-10', 12.00, 850.00, 10200.00, '3-Way Matched'),
+('INV-2026-011', 'PO-2026-011', 'VND-001', '2026-02-12', '2026-03-14', 3500.00, 0.75, 2625.00, '3-Way Matched'),
+('INV-2026-012', 'PO-2026-012', 'VND-002', '2026-02-14', '2026-03-31', 2000.00, 2.10, 4200.00, '3-Way Matched'),
+('INV-2026-013', 'PO-2026-013', 'VND-003', '2026-02-14', '2026-02-28', 25.00, 320.00, 8000.00, 'Price Discrepancy'),
+('INV-2026-014', 'PO-2026-014', 'VND-004', '2026-02-16', '2026-03-18', 40.00, 125.00, 5000.00, '3-Way Matched'),
+('INV-2026-015', 'PO-2026-015', 'VND-005', '2026-02-20', '2026-03-07', 1.00, 3100.00, 3100.00, 'Price Discrepancy'),
+('INV-2026-016', 'PO-2026-016', 'VND-006', '2026-02-28', '2026-04-29', 800.00, 16.50, 13200.00, '3-Way Matched'),
+('INV-2026-017', 'PO-2026-017', 'VND-007', '2026-02-27', '2026-03-29', 45.00, 190.00, 8550.00, 'Quantity Discrepancy'),
+('INV-2026-018', 'PO-2026-018', 'VND-008', '2026-03-02', '2026-04-16', 15000.00, 0.12, 1800.00, '3-Way Matched'),
+('INV-2026-019', 'PO-2026-019', 'VND-009', '2026-03-05', '2026-04-04', 35.00, 145.00, 5075.00, 'Price Discrepancy'),
+('INV-2026-020', 'PO-2026-020', 'VND-010', '2026-03-04', '2026-04-03', 8.00, 920.00, 7360.00, '3-Way Matched'),
+('INV-2026-021', 'PO-2026-021', 'VND-001', '2026-03-10', '2026-04-09', 400.00, 14.20, 5680.00, '3-Way Matched'),
+('INV-2026-022', 'PO-2026-022', 'VND-002', '2026-03-12', '2026-04-26', 1000.00, 5.80, 5800.00, 'Quantity Discrepancy'),
+('INV-2026-023', 'PO-2026-023', 'VND-003', '2026-03-13', '2026-03-27', 15.00, 550.00, 8250.00, '3-Way Matched'),
+('INV-2026-024', 'PO-2026-024', 'VND-004', '2026-03-15', '2026-04-14', 1.00, 6500.00, 6500.00, 'Blocked');
 
--- 6. Verification Summary Audit
-SELECT 
-    (SELECT COUNT(*) FROM suppliers) AS total_vendors,
-    (SELECT COUNT(*) FROM purchase_orders) AS total_pos,
-    (SELECT COUNT(*) FROM goods_receipts) AS total_receipts,
-    (SELECT COUNT(*) FROM invoices) AS total_invoices;
+-- 6. Payments (19 Records)
+INSERT INTO payments (payment_id, invoice_id, payment_date, amount_paid, payment_method, payment_status) VALUES
+('PAY-2026-001', 'INV-2026-001', '2026-02-05', 2175.60, 'SEPA', 'Discount Captured'),
+('PAY-2026-002', 'INV-2026-002', '2026-03-01', 14400.00, 'SEPA', 'Paid On-Time'),
+('PAY-2026-003', 'INV-2026-003', '2026-01-27', 12800.00, 'Wire', 'Paid On-Time'),
+('PAY-2026-004', 'INV-2026-004', '2026-02-12', 2880.00, 'Corporate Card', 'Paid On-Time'),
+('PAY-2026-005', 'INV-2026-005', '2026-02-10', 3400.00, 'SEPA', 'Paid Late'),
+('PAY-2026-006', 'INV-2026-006', '2026-03-25', 12600.00, 'Wire', 'Paid On-Time'),
+('PAY-2026-007', 'INV-2026-007', '2026-02-24', 6125.00, 'SEPA', 'Paid On-Time'),
+('PAY-2026-008', 'INV-2026-008', '2026-03-18', 3528.00, 'SEPA', 'Discount Captured'),
+('PAY-2026-009', 'INV-2026-009', '2026-03-05', 14800.00, 'SEPA', 'Paid On-Time'),
+('PAY-2026-010', 'INV-2026-010', '2026-03-12', 10200.00, 'Wire', 'Paid Late'),
+('PAY-2026-011', 'INV-2026-011', '2026-03-10', 2625.00, 'SEPA', 'Paid On-Time'),
+('PAY-2026-012', 'INV-2026-012', '2026-03-28', 4200.00, 'SEPA', 'Paid On-Time'),
+('PAY-2026-013', 'INV-2026-013', '2026-03-05', 8000.00, 'Wire', 'Paid Late'),
+('PAY-2026-014', 'INV-2026-014', '2026-03-15', 5000.00, 'Corporate Card', 'Paid On-Time'),
+('PAY-2026-015', 'INV-2026-016', '2026-04-20', 13200.00, 'Wire', 'Paid On-Time'),
+('PAY-2026-016', 'INV-2026-018', '2026-04-10', 1764.00, 'SEPA', 'Discount Captured'),
+('PAY-2026-017', 'INV-2026-020', '2026-04-01', 7360.00, 'Wire', 'Paid On-Time'),
+('PAY-2026-018', 'INV-2026-021', '2026-04-05', 5680.00, 'SEPA', 'Paid On-Time'),
+('PAY-2026-019', 'INV-2026-023', '2026-03-25', 8250.00, 'Wire', 'Paid On-Time');
+
+-- 7. Audit & Exception Log (10 Records) -> Total = Exactly 150 rows
+INSERT INTO procurement_audit_log (entity_name, entity_key, action_type, flagged_by) VALUES
+('invoices', 'INV-2026-013', 'PRICE_MISMATCH', 'SYSTEM_VALIDATION'),
+('invoices', 'INV-2026-015', 'PRICE_MISMATCH', 'SYSTEM_VALIDATION'),
+('invoices', 'INV-2026-017', 'QTY_SHORTFALL', 'WAREHOUSE_RECEIVING'),
+('invoices', 'INV-2026-019', 'PRICE_MISMATCH', 'SYSTEM_VALIDATION'),
+('invoices', 'INV-2026-022', 'QTY_SHORTFALL', 'WAREHOUSE_RECEIVING'),
+('invoices', 'INV-2026-024', 'FRAUD_BLOCK', 'FINANCE_CONTROLLER'),
+('payments', 'PAY-2026-005', 'SLA_BREACH', 'AUTOMATED_ALERTS'),
+('payments', 'PAY-2026-010', 'SLA_BREACH', 'AUTOMATED_ALERTS'),
+('goods_receipts', 'GR-2026-017', 'DAMAGE_INSPECTION', 'QA_LAB_BERLIN'),
+('goods_receipts', 'GR-2026-022', 'DELIVERY_VARIANCE', 'RECEIVING_BAY_3');
